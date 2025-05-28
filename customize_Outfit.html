@@ -289,9 +289,9 @@
         </div>
 
 
-        <nav class="PaginationNav mt-4" aria-label="Page navigation">
-          <ul id="pagination" class="pagination pagination-md justify-content-center"></ul>
-        </nav>
+         <nav class="PaginationNav mt-4" aria-label="Page navigation">
+        <ul id="pagination" class="pagination pagination-md justify-content-center"></ul>
+         </nav>
         
 
       </div>
@@ -390,128 +390,118 @@
 
 
         
-        <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            const customizeOutfitSlug = "product_category-customize-outfit";
-            const productWrapper = document.querySelector("#allProducts");
-            const paginationWrapper = document.getElementById("pagination");
-            const productsPerPage = 16;
-            window.currentPage = 1; // Use global scope so it works inside click handlers
-            let filteredProducts = [];
-        
-            const readableCategory = customizeOutfitSlug
-              .replace("product_category-", "")
-              .split("-")
-              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(" ");
-        
-            document.querySelector(".secH").textContent = readableCategory;
-        
-            function renderProducts(page) {
-              productWrapper.innerHTML = "";
-              const start = (page - 1) * productsPerPage;
-              const end = start + productsPerPage;
-              const paginatedItems = filteredProducts.slice(start, end);
-        
-              paginatedItems.forEach(product => {
-                const title = product.acf?.product_title || product.title?.rendered || "Untitled";
-                const price = product.acf?.product_price || "0";
-        
-                const img1 = product.acf?.image_1 || product.acf?.image_2 || product.acf?.image_3 || product.acf?.image_4 || "/image/no-image.png";
-                const img2 = product.acf?.image_2 || product.acf?.image_3 || product.acf?.image_4 || product.acf?.image_1 || img1;
-        
-                const card = document.createElement("div");
-                card.className = "col-lg-3 col-6";
-                card.innerHTML = `
-                  <div class="productCard">
-                    <a class="anchorAbs" href="productDescription.html?id=${product.id}"></a>
-                    <div class="hoverWrapper">
-                      <img loading="lazy" class="mainImg" src="${img1}" alt="${title}">
-                      <img loading="lazy" class="hoverImg" src="${img2}" alt="${title}">
-                    </div>
-                    <div class="productInfo">
-                      <h5 class="fifthH mb-0">${title}</h5>
-                      <span class="sixthH tag">${readableCategory}</span>
-                      <p class="PriceTag mt-1"><span>From</span> <strong>Rs.&nbsp;${price}</strong></p>
-                    </div>
-                  </div>
-                `;
-                productWrapper.appendChild(card);
-              });
-        
-              // Set click handler on links to save current page
-              document.querySelectorAll(".productCard .anchorAbs").forEach(anchor => {
-                anchor.addEventListener("click", function () {
-                  localStorage.setItem("product_page", window.currentPage);
-                });
-              });
-            }
-        
-            function renderPagination(totalPages) {
-              paginationWrapper.innerHTML = "";
-        
-              const createPageItem = (page, isActive = false, isDisabled = false, label = null) => {
-                const li = document.createElement("li");
-                li.className = `page-item${isActive ? " active" : ""}${isDisabled ? " disabled" : ""}`;
-                li.innerHTML = `
-                  <a class="page-link" href="#" data-page="${page}">
-                    ${label || page}
-                  </a>
-                `;
-                return li;
-              };
-        
-              // Previous
-              paginationWrapper.appendChild(
-                createPageItem(window.currentPage - 1, false, window.currentPage === 1, "&laquo;")
-              );
-        
-              // Page numbers
-              for (let i = 1; i <= totalPages; i++) {
-                paginationWrapper.appendChild(createPageItem(i, i === window.currentPage));
-              }
-        
-              // Next
-              paginationWrapper.appendChild(
-                createPageItem(window.currentPage + 1, false, window.currentPage === totalPages, "&raquo;")
-              );
-            }
-        
-            paginationWrapper.addEventListener("click", function (e) {
-              if (e.target.tagName === "A") {
-                e.preventDefault();
-                const newPage = parseInt(e.target.getAttribute("data-page"));
-                const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-                if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
-                  window.currentPage = newPage;
-                  renderProducts(window.currentPage);
-                  renderPagination(totalPages);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }
-            });
-        
-            fetch("https://shopp.organicsmahi.com/wp-json/wp/v2/product?per_page=100")
-              .then(response => {
-                if (!response.ok) throw new Error("Network response was not ok");
-                return response.json();
-              })
-              .then(data => {
-                filteredProducts = data.filter(product =>
-                  product.class_list?.includes(customizeOutfitSlug)
-                );
-        
-                window.currentPage = parseInt(localStorage.getItem("product_page")) || 1;
-        
-                const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-                renderProducts(window.currentPage);
-                renderPagination(totalPages);
-              })
-              .catch(error => {
-                console.error("Fetch error:", error);
-              });
+         <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const customizeOutfitSlug = "product_category-customizeoutfit";
+      const productWrapper = document.querySelector("#allProducts");
+      const paginationWrapper = document.getElementById("pagination");
+      const productsPerPage = 16;
+      window.currentPage = 1;
+      let filteredProducts = [];
+
+      const readableCategory = " Customize Outfit "; // Hardcoded for clarity
+
+      document.querySelector(".secH").textContent = readableCategory;
+
+      function renderProducts(page) {
+        productWrapper.innerHTML = "";
+        const start = (page - 1) * productsPerPage;
+        const end = start + productsPerPage;
+        const paginatedItems = filteredProducts.slice(start, end);
+
+        paginatedItems.forEach(product => {
+          const id = product.id;
+          const title = product.title || "Untitled";
+          const subcategory = product.subcategory || "Uncategorized";
+          const img1 = product.image_1 || "/image/no-image.png";
+          const img2 = product.image_2 || img1;
+
+          const card = document.createElement("div");
+          card.className = "col-lg-3 col-6";
+          card.innerHTML = `
+          <div class="productCard">
+            <a class="anchorAbs" href="productDescription.html?id=${id}"></a>
+            <div class="hoverWrapper">
+              <img loading="lazy" class="mainImg" src="${img1}" alt="${title}">
+              <img loading="lazy" class="hoverImg" src="${img2}" alt="${title}">
+            </div>
+            <div class="productInfo">
+              <h5 class="fifthH mb-0">${title}</h5>
+              <span class="sixthH tag">${subcategory}</span>
+            </div>
+          </div>
+        `;
+          productWrapper.appendChild(card);
+        });
+
+        // Save the current page so user returns to it later
+        document.querySelectorAll(".productCard .anchorAbs").forEach(anchor => {
+          anchor.addEventListener("click", function () {
+            localStorage.setItem("product_page", window.currentPage);
           });
-        </script>
+        });
+      }
+
+      function renderPagination(totalPages) {
+        paginationWrapper.innerHTML = "";
+
+        const createPageItem = (page, isActive = false, isDisabled = false, label = null) => {
+          const li = document.createElement("li");
+          li.className = `page-item${isActive ? " active" : ""}${isDisabled ? " disabled" : ""}`;
+          li.innerHTML = `
+          <a class="page-link" href="#" data-page="${page}">
+            ${label || page}
+          </a>
+        `;
+          return li;
+        };
+
+        paginationWrapper.appendChild(
+          createPageItem(window.currentPage - 1, false, window.currentPage === 1, "&laquo;")
+        );
+
+        for (let i = 1; i <= totalPages; i++) {
+          paginationWrapper.appendChild(createPageItem(i, i === window.currentPage));
+        }
+
+        paginationWrapper.appendChild(
+          createPageItem(window.currentPage + 1, false, window.currentPage === totalPages, "&raquo;")
+        );
+      }
+
+      paginationWrapper.addEventListener("click", function (e) {
+        if (e.target.tagName === "A") {
+          e.preventDefault();
+          const newPage = parseInt(e.target.getAttribute("data-page"));
+          const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+          if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
+            window.currentPage = newPage;
+            renderProducts(window.currentPage);
+            renderPagination(totalPages);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }
+      });
+
+      // ✅ Fetch Data from Apps Script
+      fetch("https://script.google.com/macros/s/AKfycbyGVg__dyWEnVlR8EZWFo3zvqDxrdAJkHJkhOA2MWPaVQ8Yvdcvw4ZfC6I1-kVHERdN/exec")
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          filteredProducts = data.filter(product =>
+            product.class_list && product.class_list.includes(customizeOutfitSlug)
+          );
+
+          window.currentPage = parseInt(localStorage.getItem("product_page")) || 1;
+          const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+          renderProducts(window.currentPage);
+          renderPagination(totalPages);
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+        });
+    });
+  </script>
         
         
     <script defer src="js/script.js"></script>
